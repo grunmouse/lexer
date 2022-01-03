@@ -5,7 +5,7 @@
 class IntegerArea{
 	constructor(left, right){
 		if(right<=left){
-			return IntegerArea.Empty;
+			return;
 		}		
 		this.left = left;
 		if(right && isFinite(right)){
@@ -17,6 +17,8 @@ class IntegerArea{
 		return value>=this.left && (!this.right || value<this.right);
 	}
 	
+
+	
 	doCompilHas(){
 		if(this.right){
 			return `value >= ${this.left} && value < ${this.right}`;
@@ -27,11 +29,11 @@ class IntegerArea{
 	}
 	
 	compilHas(){
-		return new Function(value, 'return ' + this.doCompilHas());
+		return new Function('value', 'return ' + this.doCompilHas());
 	}
 	
 	isEmpty(){
-		return this.left>=this.right;
+		return isNaN(this.left) && isNaN(this.right);
 	}
 	
 	isFinite(){
@@ -39,7 +41,7 @@ class IntegerArea{
 	}
 	
 	*values(){
-		let [left, right] = this;
+		let {left, right} = this;
 		right = right || Number.MAX_SAFE_INTEGER;
 		for(let value = left; value<right; ++value){
 			yield value;
@@ -47,7 +49,7 @@ class IntegerArea{
 	}
 	
 	isCanJoin(b){
-		if(b.left === a.left){
+		if(b.left === this.left){
 			return true;
 		}
 		else if(b.left < this.left){
@@ -56,6 +58,14 @@ class IntegerArea{
 		else{
 			return this.has(b.left-1);
 		}
+	}
+	
+	isIncludes(b){
+		return b.left>=this.left && (!this.right || b.right<=this.right);
+	}
+	
+	isEqual(b){
+		return b.left === this.left && (!b.right && !this.right || b.right === this.right)
 	}
 	
 	join(b){

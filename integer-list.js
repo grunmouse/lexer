@@ -4,9 +4,9 @@ class IntegerList{
 	constructor(areas){
 		areas = areas.filter(IntegerArea.notEmpty);
 		areas.sort(IntegerArea.sorter);
-		let list = [], last;
+		let list = [], last=-1;
 		for(let area of areas){
-			if(!last){
+			if(last<0){
 				last = 0;
 				list[last] = area;
 			}
@@ -24,14 +24,14 @@ class IntegerList{
 		this.areas = list;
 	}
 	has(value){
-		return areas.some((area)=>(area.has(value)));
+		return this.areas.some((area)=>(area.has(value)));
 	}
 	doCompilHas(){
-		return this.areas.map(area=>(area.doCompilHas()));
+		return this.areas.map(area=>(area.doCompilHas())).join(' || ');
 	}
 	
 	compilHas(){
-		return new Function(value, 'return ' + this.doCompilHas());
+		return new Function('value', 'return ' + this.doCompilHas());
 	}	
 	
 	isEmpty(){
@@ -48,15 +48,22 @@ class IntegerList{
 		}
 	}	
 	
-	*_intersection(listB){
-		for(let a of this.areas){
-			for(let b of listB.areas){
-				let intersection = a.intersection(b);
-				if(!intersection.isEmpty()){
-					yield {a, b, intersection};
-				}
+	isIncludes(listB){
+		let i=0, j=0, A = this.areas, B = listB.areas, lenA = A.length, lenB = B.length;
+		for(;j<lenB && i<lenA;){
+			let includes = A[i].isIncludes(B[j]);
+			if(includes){
+				j++;
+			}
+			else{
+				i++;
 			}
 		}
+		return j === lenB;
+	}
+	
+	isEqual(listB){
+		return this.areas.every((area, i)=>(area.isEqual(listB.areas[i])));
 	}
 	
 	negate(){
@@ -78,12 +85,35 @@ class IntegerList{
 	}
 	
 	intersection(listB){
-		let areas = [...this._intersection(listB)];
-		areas = areas.map(a=>a.intersection);
-		
-		return new IntegerList(areas);
+		//A && B = !(!A || !B)
+		return this.negate().join(listB.negate()).negate();
 	}
 	
+	subtrace(listB){
+		//A \ B = A && !B = !(!A || B) 
+		return this.negate().join(listB).negate();
+	}
 }
+
+IntegerList.fromValues = function(values){
+	return new IntegerList(values.map((value)=>(new IntegerArea(value, value+1))));
+}
+
+IntegerList.fromParts = function(parts){
+	return new IntegerList(parts.map(part=>{
+		if(typeof part === 'number'){
+			part = [part, part];
+		}
+		else if(part.length === 1){
+			part.push(part[0]);
+		}
+		if(!isNaN(part[1])){
+			part[1]+=1;
+		}
+		return new IntegerArea(part[0], part[1]);
+	}))
+}
+
+IntegerList.
 
 module.exports = IntegerList;
