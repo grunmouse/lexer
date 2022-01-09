@@ -1,3 +1,4 @@
+const inspect = Symbol.for('nodejs.util.inspect.custom');
 
 /**
  * Представляет полуинтервал на множестве целых неотрицательных чисел.
@@ -34,6 +35,10 @@ class IntegerArea{
 	
 	isEmpty(){
 		return isNaN(this.left) && isNaN(this.right);
+	}
+	
+	isOne(){
+		return this.right-this.left === 1;
 	}
 	
 	isFinite(){
@@ -79,6 +84,18 @@ class IntegerArea{
 		let right = this.right && b.right && Math.min(this.right, b.right) || this.right || b.right;
 		
 		return new IntegerArea(left, right);
+	}
+	
+	[inspect](depth, options){
+		if(this.isOne()){
+			return options.stylize(this.left, 'number');
+		}
+		else if(this.isFinite()){
+			return options.stylize(this.left, 'number') + '-' + options.stylize(this.right, 'number');
+		}
+		else{
+			return options.stylize(this.left, 'number') + '-';
+		}
 	}
 }
 

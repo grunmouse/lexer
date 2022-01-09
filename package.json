@@ -14,5 +14,8 @@
   "devDependencies": {
     "@grunmouse/jsverify-env": "link:..\\jsverify-env",
     "jsverify": "^0.8.4"
+  },
+  "dependencies": {
+    "@grunmouse/syntax-lr0": "link:..\\syntax-lr0"
   }
 }

@@ -1,4 +1,5 @@
 const IntegerArea = require('./integer-area.js');
+const inspect = Symbol.for('nodejs.util.inspect.custom');
 
 class IntegerList{
 	constructor(areas){
@@ -93,6 +94,10 @@ class IntegerList{
 		//A \ B = A && !B = !(!A || B) 
 		return this.negate().join(listB).negate();
 	}
+	
+	[inspect](depth, options){
+		return 'IntegerList{ ' + this.areas.map(area=>(area[inspect](depth, options))).join(', ') + ' }';
+	}
 }
 
 IntegerList.fromValues = function(values){
@@ -114,6 +119,6 @@ IntegerList.fromParts = function(parts){
 	}))
 }
 
-IntegerList.
+
 
 module.exports = IntegerList;

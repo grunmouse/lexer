@@ -1,6 +1,6 @@
 const IntegerList = require('./integer-list.js');
 
-function parseSybmolClass(listString, codePoint){
+function parseSymbolClass(listString, codePoint){
 	const replacer = codePoint ?
 		(str, sym)=>(sym.codePointAt(0))
 		:
@@ -13,3 +13,5 @@ function parseSybmolClass(listString, codePoint){
 	
 	return IntegerList.fromParts(data);
 }
+
+module.exports = parseSymbolClass;
