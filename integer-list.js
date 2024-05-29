@@ -1,6 +1,9 @@
 const IntegerArea = require('./integer-area.js');
 const inspect = Symbol.for('nodejs.util.inspect.custom');
 
+/* 
+ * Представляет множество полуинтервалов на множестве целых неотрицательных чисел
+ */
 class IntegerList{
 	constructor(areas){
 		areas = areas.filter(IntegerArea.notEmpty);

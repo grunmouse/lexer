@@ -1,5 +1,7 @@
 /**
  * @param classMap : Map<String.IntegerList>
+ * Для множества множеств целых неотрицательных чисел находит неделимые подмножества 
+ * и выражает исходные множества через их объединения
  */
 function analyseLists(classMap){
 	const handled = new Set(); //Набор непересекающимхся классов
